@@ -1,0 +1,15 @@
+# AWS SDK
+boto3==1.26.152
+botocore==1.29.152
+
+# Scheduler para automatización
+APScheduler==3.10.4
+
+# Utilidades
+python-dotenv==1.0.0
+
+# Para notificaciones por email
+secure-smtplib==0.1.1
+
+# Logging y monitoreo
+colorlog==6.7.0

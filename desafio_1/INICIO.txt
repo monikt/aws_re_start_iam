@@ -1,0 +1,348 @@
+"""
+╔════════════════════════════════════════════════════════════════╗
+║   BIENVENIDO A LA SOLUCIÓN DE BACKUP AWS S3                   ║
+║   Desafío 1: Backup Automatizado con Notificaciones          ║
+╚════════════════════════════════════════════════════════════════╝
+"""
+
+# 📦 QUÉ SE CREÓ
+# ==============================================================================
+
+La solución incluye 12 archivos completamente funcionales:
+
+📁 ESTRUCTURA:
+   /workspaces/aws_re_start_iam/desafio_1/
+   
+   ├── 🔴 SCRIPTS PRINCIPALES
+   │   ├── backup_s3.py           (8.1 KB) - Script de backup
+   │   ├── scheduler.py           (5.2 KB) - Automatización
+   │   ├── config.py              (3.6 KB) - Configuración
+   │   └── email_notifier.py      (7.5 KB) - Email
+   │
+   ├── 🟠 HERRAMIENTAS
+   │   ├── diagnostico.py         (9.2 KB) - Verificación
+   │   ├── ejemplo_uso.py         (4.6 KB) - Menú interactivo
+   │   └── requirements.txt        (228 B) - Dependencias
+   │
+   ├── 🟡 DOCUMENTACIÓN
+   │   ├── README.md              (8.3 KB) ⭐ COMIENZA AQUÍ
+   │   ├── IMPLEMENTACION.md      (12  KB) - Guía completa
+   │   ├── RESOLUCION_RAPIDA.md   (7.1 KB) - Troubleshooting
+   │   ├── CHEAT_SHEET.md         (7.7 KB) - Referencia rápida
+   │   └── .env.example           (2.6 KB) - Template config
+   │
+   ├── 📂 files/                  - ENTRADA (archivos a respaldar)
+   └── 📂 logs/                   - SALIDA (logs, se crea automáticamente)
+
+
+# ✨ CUMPLIMIENTO DE REQUISITOS
+# ==============================================================================
+
+    ✅ Toma archivos de /workspaces/aws_re_start_iam/desafio_1/files
+    ✅ Genera backup automático 1 vez por día
+    ✅ Crea bucket en S3 automáticamente
+    ✅ Crea carpeta del día (s3://bucket/backups/YYYY-MM-DD/)
+    ✅ Notifica por email (éxito/fallo)
+    ✅ Logging detallado en archivo
+    ✅ Manejo robusto de errores
+    ✅ Soporte SMTP (Gmail, Outlook, etc.)
+    ✅ Soporte AWS SES
+    ✅ Configuración flexible
+
+
+# 🚀 CÓMO EMPEZAR (3 PASOS)
+# ==============================================================================
+
+PASO 1: INSTALAR DEPENDENCIAS
+────────────────────────────────
+cd /workspaces/aws_re_start_iam/desafio_1
+pip install -r requirements.txt
+
+✓ Instala: boto3, apscheduler, python-dotenv, colorlog
+
+
+PASO 2: CONFIGURAR CREDENCIALES
+────────────────────────────────
+cp .env.example .env
+
+Editar .env (nano, vim, VSCode, etc.) con:
+
+    # AWS
+    AWS_ACCESS_KEY_ID=tu-access-key
+    AWS_SECRET_ACCESS_KEY=tu-secret-key
+    AWS_REGION=us-east-1
+    S3_BUCKET_NAME=mi-backup-bucket-automatizado
+    
+    # Email (Gmail)
+    SMTP_USERNAME=tu-email@gmail.com
+    SMTP_PASSWORD=xxxx-xxxx-xxxx-xxxx  (App Password, NO contraseña)
+    FROM_EMAIL=tu-email@gmail.com
+    TO_EMAILS=destinatario@ejemplo.com
+    
+    # Automatización
+    BACKUP_TIME=02:00
+    TIMEZONE=America/Bogota
+
+
+PASO 3: VERIFICAR Y EJECUTAR
+────────────────────────────────
+# Verificar que todo está bien
+python3 diagnostico.py
+
+# Hacer un backup de prueba
+python3 backup_s3.py
+
+# Automatizar (se ejecutará diariamente)
+python3 scheduler.py
+
+
+# 📚 DOCUMENTACIÓN
+# ==============================================================================
+
+PRIO 1 - LEE PRIMERO (5 minutos):
+   → README.md
+
+PRIO 2 - LEE DESPUÉS (15 minutos):
+   → IMPLEMENTACION.md    (Guía completa)
+   → CHEAT_SHEET.md       (Referencia rápida)
+
+PRIO 3 - SI ALGO FALLA (5 minutos):
+   → RESOLUCION_RAPIDA.md (Troubleshooting)
+
+
+# 💡 TIPS RÁPIDOS
+# ==============================================================================
+
+✓ Para testing sin perder tiempo:
+  1. Edita .env con tus credenciales
+  2. Ejecuta: python3 diagnostico.py
+  3. Si todo ✅, ejecuta: python3 backup_s3.py
+  4. Si email llegó ✅, todo funciona
+
+✓ Para automatizar en producción:
+  1. Opción A: python3 scheduler.py (en screen/tmux)
+  2. Opción B: cron job (Linux/Mac)
+  3. Opción C: systemd service (Linux)
+
+✓ Para ver qué pasó:
+  tail -f logs/backup.log
+
+
+# 🔍 COMANDOS ÚTILES
+# ==============================================================================
+
+# Verificación rápida
+aws s3 ls                                    # Ver buckets
+aws iam get-user                             # Ver identidad
+
+# Backup manual
+python3 backup_s3.py
+
+# Automatizar
+python3 scheduler.py                         # Automático diario
+python3 scheduler.py run-now                 # Manual via scheduler
+
+# Menu interactivo
+python3 ejemplo_uso.py
+
+# Diagnostico
+python3 diagnostico.py                       # Verificación completa
+
+# Ver logs
+tail -50 logs/backup.log                     # Últimas 50 líneas
+tail -f logs/backup.log                      # En vivo
+
+# Verificar en AWS
+aws s3 ls s3://mi-backup-bucket/
+aws s3 ls s3://mi-backup-bucket/backups/2024-03-18 --recursive
+
+
+# 🎯 FLUJO ESPERADO
+# ==============================================================================
+
+INSTALACIÓN:
+   pip install -r requirements.txt          ← Una sola vez
+
+CONFIGURACIÓN:
+   cp .env.example .env
+   # Editar .env con credenciales          ← Una sola vez
+
+PRUEBA:
+   python3 diagnostico.py                   ← Verificar todo
+   python3 backup_s3.py                     ← Test manual
+
+PRODUCCIÓN:
+   python3 scheduler.py                     ← Automático (diario)
+
+MONITOREO:
+   tail -f logs/backup.log                  ← Ver en tiempo real
+   # Esperar emails                         ← Recibir notificaciones
+
+
+# ⚙️ CONFIGURACIÓN (valores comunes)
+# ==============================================================================
+
+BACKUP_TIME (Hora del backup):
+   02:00     ← 2 AM (recomendado, bajo tráfico)
+   14:00     ← 2 PM
+   20:00     ← 8 PM
+
+TIMEZONE (Zona horaria):
+   UTC                    ← Hora UTC
+   America/New_York       ← Este
+   America/Mexico_City    ← Central
+   America/Los_Angeles    ← Pacífico
+   America/Bogota         ← Bogotá
+   Europe/London          ← Londres
+   Asia/Tokyo             ← Tokio
+
+Para lista completa: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+EMAIL_PROVIDER:
+   smtp                   ← Gmail, Outlook, SendGrid
+   ses                    ← AWS SES
+
+
+# ❌ ERRORES COMUNES
+# ==============================================================================
+
+"ModuleNotFoundError: boto3"
+→ pip install -r requirements.txt
+
+"Unable to locate credentials"
+→ Editar .env con AWS_ACCESS_KEY_ID y AWS_SECRET_ACCESS_KEY
+
+"Email refused"
+→ Para Gmail: Usar App Password (NO contraseña)
+→ https://myaccount.google.com/apppasswords
+
+"NoSuchBucket"
+→ S3_BUCKET_NAME debe ser único globalmente
+→ No puede tener mayúsculas ni guiones bajos
+
+Ver más errores en: RESOLUCION_RAPIDA.md
+
+
+# 🔐 SEGURIDAD
+# ==============================================================================
+
+PROTEGER CREDENCIALES:
+
+✓ DON'T:
+  ❌ git add .env                 (NUNCA commitear credenciales)
+  ❌ git add ~/.aws/credentials    (NUNCA commitear credenciales)
+  ❌ echo $AWS_SECRET_ACCESS_KEY   (NUNCA mostrar en terminal)
+
+✓ DO:
+  ✅ echo .env >> .gitignore
+  ✅ Usar variables de entorno
+  ✅ Editar .env solo localmente
+
+
+# 📊 ESTRUCTURA DE DATOS EN S3
+# ==============================================================================
+
+Después de ejecutar, verás en S3:
+
+s3://mi-backup-bucket-automatizado/
+└── backups/
+    ├── 2024-03-18/
+    │   ├── backup1.txt
+    │   ├── backup2.txt
+    │   └── ... (archivos de hoy)
+    ├── 2024-03-19/
+    │   └── ...
+    └── 2024-03-20/
+        └── ...
+
+
+# 📧 EMAIL EJEMPLO
+# ==============================================================================
+
+ASUNTO: [AWS Backup] Proceso de backup EXITOSO - 18/03/2024 10:30
+
+CONTENIDO:
+   📦 Reporte de Backup Automatizado a AWS S3
+   
+   ✅ EXITOSO
+   
+   Mensaje: Backup completado exitosamente. 20 archivo(s) subido(s)
+   
+   Información              Detalle
+   ────────────────────────────────
+   Timestamp                2024-03-18T10:31:00
+   Bucket S3                s3://mi-backup-bucket
+   Archivos Subidos        20
+   Errores                 0
+
+
+# ✅ CHECKLIST FINAL
+# ==============================================================================
+
+Antes de ejecutar en producción:
+
+☐ Instalé dependencias
+☐ Copié .env.example a .env
+☐ Edité .env con mis credenciales
+☐ Ejecuté diagnostico.py (todo ✅)
+☐ Ejecuté backup_s3.py (funcionó)
+☐ Recibí email del test
+☐ Verifiqué archivos en S3
+☐ Leí README.md
+☐ Leí IMPLEMENTACION.md
+
+¡LISTO! Ahora puedes ejecutar: python3 scheduler.py
+
+
+# 🆘 SI NECESITAS AYUDA
+# ==============================================================================
+
+1. Ejecutar diagnóstico:
+   python3 diagnostico.py
+
+2. Ver logs completos:
+   tail -100 logs/backup.log
+
+3. Leer guías:
+   - README.md
+   - IMPLEMENTACION.md
+   - RESOLUCION_RAPIDA.md
+
+4. Buscar error específico:
+   grep ERROR logs/backup.log
+
+
+# 📍 UBICACIONES IMPORTANTES
+# ==============================================================================
+
+Directorio principal:
+   /workspaces/aws_re_start_iam/desafio_1/
+
+Archivos a respaldar (entrada):
+   /workspaces/aws_re_start_iam/desafio_1/files/
+
+Logs (salida):
+   /workspaces/aws_re_start_iam/desafio_1/logs/
+
+Configuración:
+   /workspaces/aws_re_start_iam/desafio_1/.env
+
+
+# 🎓 PRÓXIMOS PASOS
+# ==============================================================================
+
+1. ⭐ Lee: README.md (5 min)
+2. 🔧 Configura: .env con tus credenciales (5 min)
+3. ✅ Verifica: python3 diagnostico.py (1 min)
+4. 🧪 Prueba: python3 backup_s3.py (2 min)
+5. 🚀 Automatiza: python3 scheduler.py (1 min)
+
+TOTAL: 14 minutos para estar en producción
+
+
+════════════════════════════════════════════════════════════════
+
+                    ¡Gracias por usar!
+
+════════════════════════════════════════════════════════════════
+"""
