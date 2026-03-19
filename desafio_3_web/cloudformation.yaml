@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Desafío 3: Infraestructura web con VPC, NAT, ALB y EC2'
+Description: 'Desafío 3: Infraestructura web con VPC, NAT, ALB y EC2 (usando LabRole)'
 
 Parameters:
   EnvironmentName:
@@ -274,30 +274,7 @@ Resources:
       Port: 80
       Protocol: HTTP
 
-  # Rol IAM para las instancias (permite acceso a SSM Parameter Store, opcional)
-  InstanceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-      Tags:
-        - Key: Name
-          Value: !Sub ${EnvironmentName}-instance-role
-
-  InstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - !Ref InstanceRole
-
-  # Lanzar configuración para Auto Scaling
+  # Lanzar configuración para Auto Scaling (usando LabRole existente)
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
@@ -306,7 +283,7 @@ Resources:
         ImageId: !Ref LatestAmiId
         InstanceType: !Ref InstanceType
         IamInstanceProfile:
-          Arn: !GetAtt InstanceProfile.Arn
+          Name: "LabRole"   # Instance profile asociado al rol LabRole
         SecurityGroupIds:
           - !Ref InstanceSG
         UserData:
