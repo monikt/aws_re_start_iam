@@ -1,0 +1,27 @@
+{
+    "inventory": {
+        "EC2": [],
+        "S3": [],
+        "RDS": [],
+        "Lambda": [],
+        "Timestamp": "2026-03-19T00:09:25.758631"
+    },
+    "classified": {
+        "EC2": {
+            "running": [],
+            "stopped": [],
+            "other": []
+        },
+        "S3": {
+            "active": []
+        },
+        "RDS": {
+            "available": [],
+            "stopped": [],
+            "other": []
+        },
+        "Lambda": {
+            "active": []
+        }
+    }
+}
